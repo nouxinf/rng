@@ -36,6 +36,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import androidx.wear.compose.material3.*
 import androidx.compose.foundation.Image
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.core.view.HapticFeedbackConstantsCompat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,7 +119,7 @@ fun HomeScreen(
 fun CoinFlipScreen(onBack: () -> Unit) {
     val listState = rememberTransformingLazyColumnState()
     val transformationSpec = rememberTransformationSpec()
-
+    val haptic = LocalHapticFeedback.current
     var message by remember { mutableStateOf("Waiting..")}
     var coinIcon by remember {  mutableStateOf(R.drawable.questionmarkcoin)}
     fun flipCoin() {
@@ -131,6 +134,7 @@ fun CoinFlipScreen(onBack: () -> Unit) {
         } else {
             R.drawable.tails
         }
+        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
 
     }
 
