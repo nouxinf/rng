@@ -64,12 +64,20 @@ fun WearApp(greetingName: String) {
                         greetingName = greetingName,
                         onCoinFlipClick = {
                             navController.navigate("coin_flip")
+                        },
+                        onDiceRollClick = {
+                            navController.navigate("dice_roll")
                         }
                     )
                 }
 
                 composable("coin_flip") {
                     CoinFlipScreen(
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable("dice_roll") {
+                    DiceRollScreen(
                         onBack = { navController.popBackStack() }
                     )
                 }
@@ -80,7 +88,8 @@ fun WearApp(greetingName: String) {
 @Composable
 fun HomeScreen(
     greetingName: String,
-    onCoinFlipClick: () -> Unit
+    onCoinFlipClick: () -> Unit,
+    onDiceRollClick: () -> Unit
 ) {
     val listState = rememberTransformingLazyColumnState()
     val transformationSpec = rememberTransformationSpec()
@@ -109,7 +118,18 @@ fun HomeScreen(
                         .transformedHeight(this, transformationSpec),
                     transformation = SurfaceTransformation(transformationSpec),
                 ) {
-                    Text("Coin flip")
+                    Text("Coin Flip")
+                }
+            }
+            item {
+                Button(
+                    onClick = onDiceRollClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
+                ) {
+                    Text("Dice Roll")
                 }
             }
         }
@@ -121,7 +141,7 @@ fun CoinFlipScreen(onBack: () -> Unit) {
     val transformationSpec = rememberTransformationSpec()
     val haptic = LocalHapticFeedback.current
     var message by remember { mutableStateOf("Waiting..")}
-    var coinIcon by remember {  mutableStateOf(R.drawable.questionmarkcoin)}
+    var coinIcon by remember {  mutableIntStateOf(R.drawable.questionmarkcoin)}
     fun flipCoin() {
         val coin = (0..1).random()
         message = if (coin == 0) {
@@ -151,7 +171,7 @@ fun CoinFlipScreen(onBack: () -> Unit) {
                         .transformedHeight(this, transformationSpec),
                     transformation = SurfaceTransformation(transformationSpec),
                 ) {
-                    Text("coin flip screen")
+                    Text("Coin Flip")
                 }
             }
             item {
@@ -174,7 +194,64 @@ fun CoinFlipScreen(onBack: () -> Unit) {
         }
     }
 }
+@Composable
+fun DiceRollScreen(onBack: () -> Unit) {
+    val listState = rememberTransformingLazyColumnState()
+    val transformationSpec = rememberTransformationSpec()
+    val haptic = LocalHapticFeedback.current
+    var diceNumber by remember { mutableStateOf("Waiting")}
+    var diceIcon by remember { mutableIntStateOf(R.drawable.dicequestionmark)}
 
+    fun rollDice() {
+        val random = (1..6).random()
+        diceNumber = random.toString()
+        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+        when (random) {
+            1 -> diceIcon = R.drawable.dice1
+            2 -> diceIcon = R.drawable.dice2
+            3 -> diceIcon = R.drawable.dice3
+            4 -> diceIcon = R.drawable.dice4
+            5 -> diceIcon = R.drawable.dice5
+            6 -> diceIcon = R.drawable.dice6
+        }
+    }
+
+    ScreenScaffold { contentPadding ->
+        TransformingLazyColumn(
+            contentPadding = contentPadding,
+            state = listState
+        ) {
+
+            item {
+                ListHeader(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
+                ) {
+                    Text("Dice Roll")
+                }
+            }
+            item {
+                Button(
+                    onClick = { rollDice() },
+                    shape = androidx.compose.foundation.shape.CircleShape
+                ) {
+                    Text("Roll!")
+                }}
+            item {
+                Text(diceNumber)
+            }
+            item {
+                Image(
+                    painter = painterResource(id = diceIcon),
+                    contentDescription = "Dice Icon"
+                )
+            }
+
+        }
+    }
+}
 
 
 @WearPreviewDevices
