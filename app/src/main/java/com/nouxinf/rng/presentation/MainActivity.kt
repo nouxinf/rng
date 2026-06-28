@@ -39,6 +39,21 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.core.view.HapticFeedbackConstantsCompat
+import androidx.compose.material.icons.Icons
+import androidx.wear.compose.material3.Icon
+import androidx.wear.compose.material3.Picker
+import androidx.wear.compose.material3.rememberPickerState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.foundation.layout.size
+import androidx.wear.compose.material3.*
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +82,9 @@ fun WearApp(greetingName: String) {
                         },
                         onDiceRollClick = {
                             navController.navigate("dice_roll")
+                        },
+                        onCustomRangeClick = {
+                            navController.navigate("custom_range")
                         }
                     )
                 }
@@ -81,6 +99,11 @@ fun WearApp(greetingName: String) {
                         onBack = { navController.popBackStack() }
                     )
                 }
+                composable("custom_range") {
+                    CustomRangeScreen(
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
         }
     }
@@ -89,7 +112,8 @@ fun WearApp(greetingName: String) {
 fun HomeScreen(
     greetingName: String,
     onCoinFlipClick: () -> Unit,
-    onDiceRollClick: () -> Unit
+    onDiceRollClick: () -> Unit,
+    onCustomRangeClick: () -> Unit,
 ) {
     val listState = rememberTransformingLazyColumnState()
     val transformationSpec = rememberTransformationSpec()
@@ -117,6 +141,12 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .transformedHeight(this, transformationSpec),
                     transformation = SurfaceTransformation(transformationSpec),
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.heads),
+                            contentDescription = "Coin Flip",
+                        )
+                    }
                 ) {
                     Text("Coin Flip")
                 }
@@ -128,8 +158,31 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .transformedHeight(this, transformationSpec),
                     transformation = SurfaceTransformation(transformationSpec),
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.dice6),
+                            contentDescription = "Dice Roll",
+                        )
+                    }
                 ) {
                     Text("Dice Roll")
+                }
+            }
+            item {
+                Button(
+                    onClick = onCustomRangeClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
+                    icon = {
+                        Icon(
+                            painter = painterResource(R.drawable.random),
+                            contentDescription = "Custom Range RNG",
+                        )
+                    }
+                ) {
+                    Text("Custom Range")
                 }
             }
         }
@@ -249,6 +302,67 @@ fun DiceRollScreen(onBack: () -> Unit) {
                 )
             }
 
+        }
+    }
+}
+@Composable
+fun CustomRangeScreen(onBack: () -> Unit) {
+    val numbersRange = (0..100).toList()
+    var selectedPickerIndex by remember { mutableIntStateOf(0) }
+
+    var generatedValue by remember { mutableStateOf("Waiting...")}
+    val firstPickerState = rememberPickerState(
+        initialNumberOfOptions = numbersRange.size
+    )
+    val secondPickerState = rememberPickerState(
+        initialNumberOfOptions = numbersRange.size
+    )
+    LaunchedEffect(Unit) {
+        secondPickerState.scrollToOption(100)
+    }
+
+    fun generateNumber() {
+        val randomNum = (numbersRange[firstPickerState.selectedOptionIndex]..numbersRange[secondPickerState.selectedOptionIndex]).random()
+        generatedValue = randomNum.toString()
+    }
+
+    ScreenScaffold { contentPadding ->
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text("Custom Range")
+            PickerGroup(
+                selectedPickerState =
+                    if (selectedPickerIndex == 0) firstPickerState else secondPickerState,
+                autoCenter = false,
+            ) {
+                PickerGroupItem(
+                    pickerState = firstPickerState,
+                    selected = selectedPickerIndex == 0,
+                    onSelected = { selectedPickerIndex = 0 },
+                    option = { optionIndex, _ -> Text(text = optionIndex.toString()) },
+                    contentDescription = { "First number" },
+                    modifier = Modifier.size(80.dp, 100.dp),
+                )
+
+                PickerGroupItem(
+                    pickerState = secondPickerState,
+                    selected = selectedPickerIndex == 1,
+                    onSelected = { selectedPickerIndex = 1 },
+                    option = { optionIndex, _ -> Text(text = optionIndex.toString()) },
+                    contentDescription = { "Second Number" },
+                    modifier = Modifier.size(80.dp, 100.dp),
+                )
+            }
+
+            // Text("Selected: ${numbersRange[firstPickerState.selectedOptionIndex]}")
+
+            Button(onClick = { generateNumber() }) {
+                Text("Roll!")
+            }
+            Text("Number: $generatedValue")
         }
     }
 }
