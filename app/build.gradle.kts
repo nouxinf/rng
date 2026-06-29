@@ -34,7 +34,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    useLibrary("wear-sdk")
     buildFeatures {
         compose = true
     }

@@ -1,0 +1,1 @@
+Initial release of RNG for WearOS. Includes Coin Flip, Dice Roll, and Custom Range generator.

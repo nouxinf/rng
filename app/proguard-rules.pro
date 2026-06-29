@@ -1,0 +1,5 @@
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep class com.nouxinf.rng.presentation.** { *; }

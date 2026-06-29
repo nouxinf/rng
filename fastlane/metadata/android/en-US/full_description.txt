@@ -1,0 +1,7 @@
+RNG is a WearOS exclusive app that lets users digitally:
+
+- Flip a coin
+- Roll a die
+- Generate random numbers in a custom range
+
+This app is only for WearOS, it will not work on a mobile device or tablet.

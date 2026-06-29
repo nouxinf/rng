@@ -321,7 +321,16 @@ fun CustomRangeScreen(onBack: () -> Unit) {
 
     fun generateNumber() {
         haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-        val randomNum = (numbersRange[firstPickerState.selectedOptionIndex]..numbersRange[secondPickerState.selectedOptionIndex]).random()
+        val firstNumber = numbersRange[firstPickerState.selectedOptionIndex]
+        val secondNumber = numbersRange[secondPickerState.selectedOptionIndex]
+        var randomNum = 0
+        // to prevent the app from crashing when the first number is larger than the second number we check
+        randomNum = if (firstNumber <= secondNumber) {
+            (numbersRange[firstPickerState.selectedOptionIndex]..numbersRange[secondPickerState.selectedOptionIndex]).random()
+        } else {
+            (numbersRange[secondPickerState.selectedOptionIndex]..numbersRange[firstPickerState.selectedOptionIndex]).random()
+        }
+
         generatedValue = randomNum.toString()
     }
 
