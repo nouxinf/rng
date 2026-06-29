@@ -59,13 +59,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            WearApp("Android")
+            WearApp()
         }
     }
 }
 
 @Composable
-fun WearApp(greetingName: String) {
+fun WearApp() {
     val navController = rememberSwipeDismissableNavController()
 
     RNGTheme {
@@ -76,7 +76,6 @@ fun WearApp(greetingName: String) {
             ) {
                 composable("home") {
                     HomeScreen(
-                        greetingName = greetingName,
                         onCoinFlipClick = {
                             navController.navigate("coin_flip")
                         },
@@ -85,6 +84,9 @@ fun WearApp(greetingName: String) {
                         },
                         onCustomRangeClick = {
                             navController.navigate("custom_range")
+                        },
+                        onAttributionClick = {
+                            navController.navigate("attribution")
                         }
                     )
                 }
@@ -104,21 +106,32 @@ fun WearApp(greetingName: String) {
                         onBack = { navController.popBackStack() }
                     )
                 }
+                composable("attribution") {
+                    AttributionScreen(
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
         }
     }
 }
 @Composable
 fun HomeScreen(
-    greetingName: String,
     onCoinFlipClick: () -> Unit,
     onDiceRollClick: () -> Unit,
     onCustomRangeClick: () -> Unit,
+    onAttributionClick: () -> Unit,
 ) {
     val listState = rememberTransformingLazyColumnState()
     val transformationSpec = rememberTransformationSpec()
 
-    ScreenScaffold(scrollState = listState) { contentPadding ->
+    ScreenScaffold(scrollState = listState, edgeButton = {
+        EdgeButton(
+        onClick = onAttributionClick,
+        buttonSize = EdgeButtonSize.Small
+    ) {
+        Text("Attribution")
+    }}) { contentPadding ->
         TransformingLazyColumn(
             contentPadding = contentPadding,
             state = listState
@@ -366,11 +379,31 @@ fun CustomRangeScreen(onBack: () -> Unit) {
         }
     }
 }
+@Composable
+fun AttributionScreen(onBack: () -> Unit) {
+    val listState = rememberTransformingLazyColumnState()
+    val transformationSpec = rememberTransformationSpec()
 
+    ScreenScaffold { contentPadding ->
+        TransformingLazyColumn(
+            contentPadding = contentPadding,
+            state = listState
+        ) {
+            item {
+                Text(
+                    text = "Font Awesome Free icons by Fonticons, Inc. (https://fontawesome.com), licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Icons have been modified by converting them to Android Vector Drawable XML format and inverting their colors.",
+                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp)
+                )
+            }
+
+
+        }
+    }
+}
 
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
 fun DefaultPreview() {
-    WearApp("Preview Android")
+    WearApp()
 }
