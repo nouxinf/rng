@@ -15,8 +15,8 @@ android {
         applicationId = "com.nouxinf.rng"
         minSdk = 30
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
 
     }
 
@@ -37,6 +37,9 @@ android {
     buildFeatures {
         compose = true
     }
+    configurations.all {
+        exclude(group = "io.opencensus")
+    }
 }
 
 dependencies {
@@ -44,12 +47,12 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.compose.foundation)
     implementation(libs.compose.material3)
-    implementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.tooling)
     implementation(libs.core.splashscreen)
     implementation(libs.ui)
     implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.wear.tooling.preview)
+    debugImplementation(libs.ui.tooling.preview)
+    debugImplementation(libs.wear.tooling.preview)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.test.manifest)
