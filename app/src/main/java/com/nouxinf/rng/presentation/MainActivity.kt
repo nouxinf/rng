@@ -17,8 +17,6 @@ import androidx.wear.compose.material3.SurfaceTransformation
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
-import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
-import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import com.nouxinf.rng.R
 import com.nouxinf.rng.presentation.theme.RNGTheme
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
@@ -396,8 +394,6 @@ fun AttributionScreen(onBack: () -> Unit) {
     }
 }
 
-@WearPreviewDevices
-@WearPreviewFontScales
 @Composable
 fun DefaultPreview() {
     WearApp()
