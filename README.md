@@ -94,3 +94,6 @@ It should now be installed on your watch! Go to the apps list and check it out!
 
 ![The menu screen of the app](fastlane/metadata/android/en-US/images/wearScreenshots/04.png)
 
+## AI disclosure
+
+Used ChatGPT, Claude for debugging, actual code was written by me though. Android Studio agent was used to add some F-droid metadata and exclude libraries that would be marked as "anti-features" by Fdroid.
