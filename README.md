@@ -12,7 +12,7 @@ RNG is a WearOS exclusive app that lets users digitally:
 - A wearOS watch
 - A computer
 - A Wi-fi network that both the watch and the computer can join
-- ADB installed on the computer
+- ADB installed on the computer (the guide includes how to do so)
 
 ### Step 1: Install ADB
 
